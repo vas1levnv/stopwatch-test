@@ -83,7 +83,7 @@ export default {
         }
         this.hours++
         this.minutes = 0
-      }, 10)
+      }, 1000)
       this.isPlayTimer = true
     },
     stopTimer() {
