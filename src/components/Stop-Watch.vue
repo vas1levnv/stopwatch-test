@@ -10,7 +10,10 @@
         <span>{{ minutes }}</span>
       </span>
       <span v-show="minutes">:</span>
-      <span>{{ time }}</span>
+      <span>
+         <span v-show="isSecondsZero">0</span>
+        <span>{{ time }}</span>
+      </span>
     </div>
     <div class="timer-border"></div>
     <div class="timer-btn">
@@ -59,6 +62,7 @@ export default {
       minutes: 0,
       isMinutesZero: true,
       hours: 0,
+      isSecondsZero: false,
       isPlayTimer: false,
       timer: null,
     }
@@ -70,6 +74,7 @@ export default {
     playTimer() {
       this.timer = setInterval(() => {
         this.time++
+        this.isSecondsZero = true
         if (this.time <= 9) {
           return;
         }
@@ -83,7 +88,7 @@ export default {
         }
         this.hours++
         this.minutes = 0
-      }, 1000)
+      }, 100)
       this.isPlayTimer = true
     },
     stopTimer() {
@@ -96,6 +101,7 @@ export default {
       this.minutes = 0
       this.hours = 0
       this.isMinutesZero = true
+      this.isSecondsZero = false
     }
   }
 }
