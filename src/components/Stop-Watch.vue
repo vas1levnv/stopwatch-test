@@ -6,13 +6,13 @@
       <span v-show="hours">{{ hours }}</span>
       <span v-show="hours">:</span>
       <span v-show="minutes">
-        <span v-show="isMinutesZero">0</span>
+        <span v-show="minutes < 10 && minutes > 0">0</span>
         <span>{{ minutes }}</span>
       </span>
       <span v-show="minutes">:</span>
       <span>
-         <span v-show="isSecondsZero">0</span>
-        <span>{{ time }}</span>
+         <span v-show="time < 10">0</span>
+        <span v-show="time">{{ time }}</span>
       </span>
     </div>
     <div class="timer-border"></div>
@@ -58,13 +58,14 @@ export default {
 
   data() {
     return {
+      currentTime: null,
       time: 0,
       minutes: 0,
-      isMinutesZero: true,
       hours: 0,
-      isSecondsZero: false,
       isPlayTimer: false,
       timer: null,
+      elapsedTime: 0,
+      startTime: 0
     }
   },
 
@@ -72,36 +73,29 @@ export default {
 
   methods: {
     playTimer() {
-      this.timer = setInterval(() => {
-        this.time++
-        this.isSecondsZero = true
-        if (this.time <= 9) {
-          return;
-        }
-        this.minutes++
-        this.time = 0
-        if (this.minutes > 9) {
-          this.isMinutesZero = false
-        }
-        if (this.minutes <= 59) {
-          return;
-        }
-        this.hours++
-        this.minutes = 0
-      }, 100)
+      this.startTime = Date.now()
       this.isPlayTimer = true
+      this.timer = setInterval(() => {
+        this.currentTime =  Date.now() - this.startTime + this.elapsedTime;
+        this.time = parseInt((this.currentTime / 1000) % 60)
+        this.minutes = parseInt((this.currentTime / (1000 * 60)) % 60)
+        this.hours = parseInt((this.currentTime / (1000 * 60 * 60)) % 24)
+      }, 1000)
+
     },
     stopTimer() {
       clearInterval(this.timer)
+      this.elapsedTime  += Date.now() - this.startTime;
       this.isPlayTimer = false
     },
     resetTimer() {
       this.stopTimer()
-      this.time = 0
-      this.minutes = 0
+      this.startTime = 0
+      this.elapsedTime = 0
       this.hours = 0
-      this.isMinutesZero = true
-      this.isSecondsZero = false
+      this.minutes = 0
+      this.time = 0
+
     }
   }
 }
